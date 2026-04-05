@@ -1,2 +1,12 @@
-# coding-practice
-Collection of small coding projects and exercises in Java, Python, and web development.
+# Coding Practice Repository
+
+This repository contains small projects organized by programming language and technology.
+
+## Java Projects
+
+
+## Python Projects
+
+
+## Web Projects
+

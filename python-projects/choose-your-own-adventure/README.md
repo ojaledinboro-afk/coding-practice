@@ -9,4 +9,4 @@ A text-based adventure game in Python where the player chooses paths.
 
 ## How to Run
 ```bash
-python main.py
+python choose_your_own_adventure.py

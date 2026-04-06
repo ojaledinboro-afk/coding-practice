@@ -3,98 +3,148 @@ import java.io.*;
 
 public class Main {
   public static void main(String[] args) throws IOException {
+
     Scanner KYBD = new Scanner(System.in);
-    FileWriter file = new FileWriter("output.txt", false);
-    PrintWriter output = new PrintWriter(file);
+    PrintWriter output = null;
+    Scanner dataScan = null;
 
-    File data = new File("DataFile.txt");
-    Scanner dataScan = new Scanner(data);
-
-    Scanner input = new Scanner(new File("DataFile.txt"));
-
-    System.out.println("Data used:");
-    while (input.hasNextLine()) {
-      System.out.println(input.nextLine());
+    // File Handling With Error Checking
+    try {
+      dataScan = new Scanner(new File("DataFile.txt"));
+      output = new PrintWriter(new FileWriter("output.txt"));
+    } catch (IOException e) {
+      System.out.println("Error: Could not open file.");
+      return;
     }
 
-    int a = 50;
-
-    System.out.println("Enter Number");
-    int size = KYBD.nextInt();
-    double[] first = new double[a];
-
-    // Reads Data For Array
-    readData(size, first);
-
-    // Prints Out Array
-    output.println("Here Is The Original Array");
-    printArray(size, first, output);
-
-    // Finds Average Of Array
-    double avg = findAverage(size, first);
-    output.println("");
-    output.printf("The Arrays Average Is %.1f", avg);
-
-    // New Array
-    double[] second = new double[a];
-    howFarAway(size, avg, first, second);
-
-    // Prints Out New Array
-    output.println("\n\nHere Is The New Array");
-    printArray(size, second, output);
-
-    // Finds Average Of New Array
-    avg = findAverage(size, second);
-    output.println("");
-    output.printf("The New Arrays Average Is %.1f", avg);
-
-    output.close();
-
-  }
-
-  // Reads in Numbers Entered
-  public static void readData(int n, double[] numbers) throws IOException {
-    File data = new File("DataFile.txt");
-    Scanner dataScan = new Scanner(data);
-
-    for (int i = 0; i < n; i++) {
-      numbers[i] = dataScan.nextDouble();
+    // Preview File 
+    try {
+      Scanner preview = new Scanner(new FIle("DataFile.txt"));
+      System.out.println("Data used:");
+      while (preview.hasNextLine()) {
+        System.out.println(preview.nextLine());
+      }
+      preview.close();
     }
-  }
+    catch (FileNotFoundException e) {
+      System.out.println("Error reading preview.");
+    }
 
-  // Prints Out The Array In Rows And Coloums
-  public static void printArray(int q, double[] numb, PrintWriter a) {
-    int i = 0;
-    while (i < q) {
-      for (int row = 0; row < (q / 5); row++) {
-        for (int col = 0; col < 5; col++) {
-          a.printf("%10.1f", numb[i]);
-          i++;
+    // Input validation for size
+    int size = 0; 
+    while (true) {
+      System.out.print("Enter number of values (1-50): ");
+
+      if (KYBD.hasNextInt()) {
+        size = KYBD.nextInt();
+
+        if (size >= 1 && siza <= 50) {
+          break;
         }
-        a.println();
+        else {
+          System.out.println("Please enter a number between 1 and 50.")
+        }
+      }
+      else {
+        System.out.println("Invalif input. Enter a number.");
+        KYBD.next(); //clear bad input
       }
     }
 
+    double[] first = new double[size];
+
+    // Reads Data 
+    readData(size, first, dataScan);
+
+    // Prints Original Array
+    output.println("Here Is The Original Array");
+    printArray(size, first, output);
+
+    // Average 
+    double avg = findAverage(size, first);
+    output.printf("\nThe Arrays Average Is %.2f\n", avg);
+
+    // Distance Analysis
+    output.println("\nDistance Analysis:");
+    analyzeDistances(size, first, avg, output);
+
+    // Create New Array
+    double[] second = new double[size];
+    howFarAway(size, avg, first, second);
+
+    // Prints New Array
+    output.println("\nHere Is The New Array: ");
+    printArray(size, second, output);
+
+    // New Average
+    avg = findAverage(size, second);
+    output.printf("\nThe New Arrays Average Is %.2f\n", avg);
+
+    // New Distance Analysis
+    output.println("\nDistance Analysis:");
+    analyzeDistances(size, second, avg, output);
+
+    // Clean Up
+    output.close();
+    dataScan.close();;
+    KYBD.close();
   }
 
-  // Finds The Average Of The Array
+  // Reads data from file
+  public static void readData(int n, double[] numbers, Scanner dataScan){
+    int i = 0;
+
+    while (i < n && dataScan.hasNextDouble()) {
+      number[i] = dataScan.nextDouble();
+      i++;
+    }
+
+    if (i < n) {
+      System.out.println("Warning: Not enough data in file. Remaing values set to 0.");
+    }
+  }
+
+  // Find Average
   public static double findAverage(int k, double[] p) {
     double sum = 0;
-    double avg = 0;
 
     for (int i = 0; i < k; i++) {
       sum += p[i];
     }
-    sum = 0.1 * Math.floor(sum * 10.0);
-    avg = sum / k;
-    avg = 0.1 * Math.floor(avg * 10.0);
-    return avg;
+    
+    return sum / k;
   }
 
-  // Makes New Array
+  // Build New Array
   public static void howFarAway(int m, double avg, double[] r, double[] s) {
     for (int i = 0; i < m; i++) {
-      s[i] = r[i] - avg;
+      s[i] = avg - r[i];
     }
+  }
+
+  // Finds Closest and furthest values from avarage
+  public static void analyzeDistances(int n, double [] arr, double avg, PrintWriter out) {
+    double closest = arr[0];
+    double furthest = arr[0];
+
+    double minDiff = Math.abs(arr[0] - avg);
+    double maxDiff = Math.abs(arr[0] - avg);
+
+    for (int i = 1; i < n; i++) {
+      double diff = Math.abs(arr[i] - avg);
+      
+      if (diff < minDiff){
+        minDiff = diff;
+        closest = arr[i];
+      }
+
+      if (diff > maxDiff) {
+        maxDiff = diff;
+        furthest = arr[i];
+      }
+    }
+
+    out.printf("\nClosest value to average: %.2f (distance: %2f)\n", closest, minDiff);
+    out.printf("Furthest value to average: %.2f (distance: %2f)\n", furthest, maxDiff);
   }
 }

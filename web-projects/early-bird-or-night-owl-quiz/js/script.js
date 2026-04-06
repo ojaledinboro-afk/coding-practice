@@ -94,12 +94,12 @@ function showResult() {
   resultDiv.style.display = "block";
   restartBtn.style.display = "inline-block";
   if (score.early > score.night) {
-    resultDiv.textContent = "You are an Early Bird! 🌅";
+    resultDiv.textContent = "You are an Early Bird!";
   } else if (score.night > score.early) {
-    resultDiv.textContent = "You are a Night Owl! 🌙";
+    resultDiv.textContent = "You are a Night Owl!";
   } else {
     resultDiv.textContent =
-      "You're balanced between Early Bird and Night Owl! 🌞🌜";
+      "You're balanced between Early Bird and Night Owl!";
   }
 }
 

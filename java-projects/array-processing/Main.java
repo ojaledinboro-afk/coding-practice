@@ -19,7 +19,7 @@ public class Main {
 
     // Preview File 
     try {
-      Scanner preview = new Scanner(new FIle("DataFile.txt"));
+      Scanner preview = new Scanner(new File("DataFile.txt"));
       System.out.println("Data used:");
       while (preview.hasNextLine()) {
         System.out.println(preview.nextLine());
@@ -38,11 +38,11 @@ public class Main {
       if (KYBD.hasNextInt()) {
         size = KYBD.nextInt();
 
-        if (size >= 1 && siza <= 50) {
+        if (size >= 1 && size <= 50) {
           break;
         }
         else {
-          System.out.println("Please enter a number between 1 and 50.")
+          System.out.println("Please enter a number between 1 and 50.");
         }
       }
       else {
@@ -86,16 +86,26 @@ public class Main {
 
     // Clean Up
     output.close();
-    dataScan.close();;
+    dataScan.close();
     KYBD.close();
   }
 
-  // Reads data from file
+  // Prints An Array Neatly 5 Values Per Line
+  public static void printArray(int n, double[] arr, PrintWriter out) {
+    for (int i = 0; i < n; i++) {
+        out.printf("%10.2f", arr[i]);
+        if ((i + 1) % 5 == 0 || i == n - 1) {  // break line after 5 values or at the end
+            out.println();
+        }
+    }
+}
+
+  // Reads Data From Files
   public static void readData(int n, double[] numbers, Scanner dataScan){
     int i = 0;
 
     while (i < n && dataScan.hasNextDouble()) {
-      number[i] = dataScan.nextDouble();
+      numbers[i] = dataScan.nextDouble();
       i++;
     }
 

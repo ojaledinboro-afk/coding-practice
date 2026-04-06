@@ -1,0 +1,112 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(43, 43, 43);
+  font-family: Roboto, Arial;
+}
+
+p {
+  margin: 0;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.unit {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.bmi-container {
+  display: flex;
+  width: 400px;
+  background-color: white;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  box-shadow: 0px 3px 5px black;
+}
+
+.title-info {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.info div {
+  display: flex;
+  width: 400px;
+  padding-bottom: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.info div input::placeholder {
+  text-align: center;
+}
+
+#calculateButton {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 3px;
+  background-color: rgb(68, 151, 68);
+  color: white;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  transition: background-color 0.15s;
+}
+
+#calculateButton:hover {
+  background-color: rgb(51, 122, 51);
+}
+
+#calculateButton:active {
+  background-color: rgb(37, 95, 37);
+}
+
+.output-container {
+  width: 200px;
+  background-color: white;
+  text-align: center;
+  border-radius: 2px;
+  box-shadow: 0 3px 3px black;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.unit-toggle {
+  display: flex;
+  margin-top: 10px;
+}
+
+.unit-toggle button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+.unit-toggle .active {
+  background-color: rgb(68, 151, 68);
+  color: white;
+}
+
+.hidden {
+  display: none;
+}

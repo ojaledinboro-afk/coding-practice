@@ -46,7 +46,7 @@ public class Main {
         }
       }
       else {
-        System.out.println("Invalif input. Enter a number.");
+        System.out.println("Invalid input. Enter a number.");
         KYBD.next(); //clear bad input
       }
     }
@@ -118,6 +118,8 @@ public class Main {
   public static double findAverage(int k, double[] p) {
     double sum = 0;
 
+    if (k == 0) return 0;
+
     for (int i = 0; i < k; i++) {
       sum += p[i];
     }
@@ -154,7 +156,7 @@ public class Main {
       }
     }
 
-    out.printf("\nClosest value to average: %.2f (distance: %2f)\n", closest, minDiff);
-    out.printf("Furthest value to average: %.2f (distance: %2f)\n", furthest, maxDiff);
+    out.printf("\nClosest value to average: %.2f (distance: %.2f)\n", closest, minDiff);
+    out.printf("Furthest value to average: %.2f (distance: %.2f)\n", furthest, maxDiff);
   }
 }

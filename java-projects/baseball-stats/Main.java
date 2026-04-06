@@ -4,117 +4,105 @@ import java.io.*;
 public class Main {
   public static void main(String[] args)throws IOException {
     Scanner KYBD = new Scanner(System.in);
-    FileWriter file = new FileWriter("output.txt",false);
-    PrintWriter output = new PrintWriter(file);
+    PrintWriter output = new PrintWriter(new FileWriter("output.txt", false));
 
     int totalTeams = 0;
     double bestWinningAvg = 0.0;
-    //double bestFinWinningAvg = 0.0;
+    int bestTeamId = 0;
     
-    System.out.println("Please Enter Team Id:");
+    System.out.println("Enter Team Id (-1 to finish):");
     int id = KYBD.nextInt();
-    int team = 0;
 
-    while(id != -1){
-
-    System.out.println("Enter Team Wins:");
-    int wins = KYBD.nextInt();
-
-    System.out.println("Enter Team Losses:");
-    int losses = KYBD.nextInt();
-
-    //formulas 
-    int gamesPlayed = wins + losses;
-    int gamesLeft = 25 - gamesPlayed;
-    double winningAvg = ((double) wins)/gamesPlayed;
-
-    if(gamesPlayed > 25){
-      System.out.println("\n---ERROR--- \n\n\nNew Data Required\n");
-
-      
-      System.out.println("Please Enter Team Id:");
-      id = KYBD.nextInt();
-
-      System.out.println("Enter Team  Wins:");
-      wins = KYBD.nextInt();
-
-      System.out.println("Enter Team Losses:");
-      losses = KYBD.nextInt();
-      
-    }
-      
-    // prints inputted information
-     output.println("\nTeam " + id + "\n" + wins + " wins  " + losses + " losses");
-
-     output.printf("Winning Average: %, .4f", winningAvg);
-      
-     output.println("\nGames Played: " + gamesPlayed + "\tGames Remaining: " + gamesLeft);
-
-      if(gamesPlayed < 25){
-      double winGameRatio = ((double)wins + gamesLeft)/gamesPlayed;
-
-      double lossGameRatio = ((double)wins)/gamesPlayed + gamesLeft;
-
-      output.println("\nIf Team " + id + " wins the remaining games it will have a win loss ratio of " + (wins + gamesLeft) + "-" + losses);
-      output.printf(" and  an average of  %, .4f", winGameRatio);
-
-      output.println("\n\nIf Team " + id + " loses the remaining games it will have a win loss ratio of " + wins + "-" + (losses + gamesLeft));
-      output.printf(" and  an average of  %, .4f", lossGameRatio);
-    }
-
-    if(gamesLeft == 0){
-      output.println("Team " + id + " season is finished");
-    }
+    while (id != -1) {
     
-    //Comparison of games remaining and games won
-    if(gamesLeft >= wins){
-      output.println("\n\nThe remaining amount of games is greater than or equal to the amount of games won");
-    }
-    else{
-      output.println("\n\nThe remaining amount of games is not greater than  amount of games won");
+      //Input Wins and Losses
+      int wins = readNonNegative("Enter Team Wins:", KYBD);
+      int losses =  readNonNegative("Enter Team Losses:", KYBD);
+
+      int gamesPlayed = wins + losses;
+
+      //Validate max games played
+      while (gamesPlayed > 25) {
+        System.out.println("\n---ERROR-- \nTotal games cannot exceed 25. Re-enter data.");
+        wins = readNonNegative("Enter Team Wins:", KYBD);
+        losses = readNonNegative("Enter Team Losses:", KYBD);
+        gamesPlayed = wins + losses;
+      }
+
+      int gamesLeft = 25 - gamesPlayed;
+      double winningAvg = (double) wins / gamesPlayed;
+
+      // Print report to file
+      printTeamReport(output, id, wins, losses, gamesPlayed, gamesLeft, winningAvg);
+
+      // Update best winning average for incomplete seasons
+      if (winningAvg < 1 && winningAvg > bestWinningAvg) {
+        bestWinningAvg = winningAvg;
+        bestTeamId = id;
+      }
+
+      totalTeams++;
+      System.out.println("\nEnter Team Id (-1 to finish):");
+      id = KYBD.nextInt();
     }
 
-    //Comparison of games remaining and games lost
-    if(gamesLeft > losses){
-      output.println("\nThe remaining amount of games is greater than the amount of games lost");
-    }
-    else{
-       output.println("\nThe remaining amount of games is not greater than the amount of games lost" );
-    }
-
-    //Best winning avg of teams that haven't completed a season
-    if(bestWinningAvg < winningAvg && winningAvg < 1){
-      bestWinningAvg = winningAvg;
-      team = id;
-    }
-
-    //Counts the number of teams entered
-    totalTeams += 1;
-
-
-    System.out.println("\n\n");
-
-    System.out.println("Please Enter Team Id:");
-    id = KYBD.nextInt();
-
-    if(id == -1){
-      output.println("\n\n");
-      output.print("The team with the best winning average is " + team);
-      output.printf(" and their average is  %, .4f", bestWinningAvg);  
-      output.println("\n");
-      output.print("There were " + totalTeams + " teams in the league");
-    }
-      
-    }
+    //Summary at the end
+    output.println("\n\nSummary:");
+    output.printf("Team with the best winning average: %d (%.4f)\n", bestTeamId, bestWinningAvg);
+    output.print("Total teams in league: " + totalTeams);
 
     output.close();
-    
-
-
-
-
-
-
-    
+    KYBD.close();
   }
+
+  // Reads non-negative integer input
+  public static int readNonNegative(String prompt, Scanner sc) {
+    int value = -1;
+    while (value < 0) {
+      System.out.println(prompt);
+      if (sc.hasNextInt()) {
+        value = sc.nextInt();
+        if (value < 0) {
+          System.out.println("Please enter a non-negative value.");
+        }
+      }
+      else {
+        System.out.println("Invalid input. Please enter a number.");
+        sc.next();   // clear invalid input      
+        }
+    }
+    return value;
+  }
+
+  // Prints team report
+  public static void printTeamReport(PrintWriter output, int id, int wins, int losses, int gamesPlayed, int gamesLeft, double winningAvg){
+    output.printf("\nTeam %d\n", id);
+    output.printf("%d wins  %d losses\n", wins, losses);
+    output.printf("Games Played: %d\tGames Remaining: %d\n", gamesPlayed, gamesLeft);
+    output.printf("Winning Average: %.4f\n", winningAvg);
+
+    if (gamesLeft > 0) {
+      output.printf("\nIf team %d wins remaining games: %d-%d, avg %.4f\n", id, wins + gamesLeft, losses, (double)(wins +  gamesLeft)/(gamesPlayed +  gamesLeft));
+      output.printf("If team %d loses remaining games: %d-%d, avg %.4f\n", id, wins, losses + gamesLeft, (double)wins/(gamesPlayed +  gamesLeft));
+    }
+    else {
+      output.printf("Team %d season is finished. \n", id);
+    }
+
+    // Comparisons
+    if (gamesLeft >= wins) {
+      output.println("The remaining amount of games is greater than or equal to the amount of games won.");
+    } 
+    else {
+      output.println("The remaining amount of games is not greater than the amount of games won.");
+    }
+
+    if (gamesLeft > losses) {
+      output.println("The remaining amount of games is greater than the amount of games lost.");
+    } 
+    else {
+      output.println("The remaining amount of games is not greater than the amount of games lost.");
+    }
+  }
+
 }
